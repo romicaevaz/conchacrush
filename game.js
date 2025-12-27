@@ -3,6 +3,19 @@ const GRID_SIZE = 8;
 const CONCHA_TYPES = ['green', 'orange', 'pink', 'purple', 'yellow'];
 const MATCH_MIN = 3;
 
+const COMBO_MESSAGES = [
+    '¡Delicioso!',
+    '¡Qué Rico!',
+    '¡Sabroso!',
+    '¡Increíble!',
+    '¡Fantástico!',
+    '¡Wow!',
+    '¡Dulce!',
+    '¡Perfecto!',
+    '¡Magnífico!',
+    '¡Espectacular!'
+];
+
 class ConchaCrush {
     constructor() {
         this.grid = [];
@@ -11,12 +24,15 @@ class ConchaCrush {
         this.selectedConcha = null;
         this.isSwapping = false;
         this.gameOver = false;
+        this.comboCount = 0;
 
         this.boardElement = document.getElementById('game-board');
         this.scoreElement = document.getElementById('score');
         this.movesElement = document.getElementById('moves');
         this.modalElement = document.getElementById('game-over-modal');
         this.finalScoreElement = document.getElementById('final-score');
+        this.comboMessageElement = document.getElementById('combo-message');
+        this.particlesContainer = document.getElementById('particles-container');
 
         document.getElementById('new-game-btn').addEventListener('click', () => this.newGame());
         document.getElementById('play-again-btn').addEventListener('click', () => this.newGame());
@@ -30,9 +46,11 @@ class ConchaCrush {
         this.moves = 30;
         this.gameOver = false;
         this.selectedConcha = null;
+        this.comboCount = 0;
         this.updateUI();
         this.createBoard();
         this.hideModal();
+        this.particlesContainer.innerHTML = '';
     }
 
     createBoard() {
@@ -223,16 +241,33 @@ class ConchaCrush {
         let matches = this.findAllMatches();
 
         while (matches.length > 0) {
+            this.comboCount++;
+
             // Mark matched conchas
             matches.forEach(({ row, col }) => {
                 this.grid[row][col].element.classList.add('matched');
             });
 
+            // Show combo message
+            this.showComboMessage(matches.length);
+
+            // Create particles at match locations
+            matches.forEach(({ row, col }) => {
+                this.createParticles(row, col);
+            });
+
             await this.wait(400);
 
-            // Update score
-            this.score += matches.length * 10;
+            // Update score with combo multiplier
+            const points = matches.length * 10 * this.comboCount;
+            this.score += points;
             this.updateUI();
+            this.animateScoreChange(points);
+
+            // Celebration effect for big matches
+            if (matches.length >= 5) {
+                this.createConfetti();
+            }
 
             // Remove matched conchas
             matches.forEach(({ row, col }) => {
@@ -252,6 +287,9 @@ class ConchaCrush {
             // Check for new matches
             matches = this.findAllMatches();
         }
+
+        // Reset combo count when no more matches
+        this.comboCount = 0;
     }
 
     async dropConchas() {
@@ -318,6 +356,80 @@ class ConchaCrush {
 
     wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    showComboMessage(matchCount) {
+        const message = COMBO_MESSAGES[Math.floor(Math.random() * COMBO_MESSAGES.length)];
+        const comboText = this.comboCount > 1 ? ` ${this.comboCount}x COMBO!` : '';
+        this.comboMessageElement.textContent = message + comboText;
+        this.comboMessageElement.classList.remove('hidden');
+        this.comboMessageElement.classList.add('show');
+
+        setTimeout(() => {
+            this.comboMessageElement.classList.remove('show');
+            setTimeout(() => {
+                this.comboMessageElement.classList.add('hidden');
+            }, 300);
+        }, 1500);
+    }
+
+    animateScoreChange(points) {
+        this.scoreElement.classList.add('score-pop');
+        setTimeout(() => {
+            this.scoreElement.classList.remove('score-pop');
+        }, 500);
+    }
+
+    createParticles(row, col) {
+        const conchaElement = this.grid[row][col].element;
+        const rect = conchaElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const particleCount = 8;
+        const colors = ['#ffeaa7', '#fdcb6e', '#fab1a0', '#ff7675', '#fd79a8', '#a29bfe'];
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = centerX + 'px';
+            particle.style.top = centerY + 'px';
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+            const angle = (Math.PI * 2 * i) / particleCount;
+            const velocity = 50 + Math.random() * 50;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity;
+
+            particle.style.setProperty('--tx', tx + 'px');
+            particle.style.setProperty('--ty', ty + 'px');
+
+            this.particlesContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 1000);
+        }
+    }
+
+    createConfetti() {
+        const confettiCount = 30;
+        const colors = ['#ffeaa7', '#fdcb6e', '#fab1a0', '#ff7675', '#fd79a8', '#a29bfe', '#74b9ff'];
+
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            confetti.style.animationDuration = (0.8 + Math.random() * 0.4) + 's';
+
+            this.particlesContainer.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 2000);
+        }
     }
 }
 

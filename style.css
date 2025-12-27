@@ -249,6 +249,194 @@ h1 {
     font-size: 1.3em;
 }
 
+/* Combo Message */
+.combo-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 3em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 4px 4px 0px #d63031,
+                 8px 8px 0px #fab1a0,
+                 0 0 20px rgba(214, 48, 49, 0.8);
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.combo-message.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    animation: comboWiggle 0.5s ease-in-out infinite;
+}
+
+.combo-message.hidden {
+    display: none;
+}
+
+@keyframes comboWiggle {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1) rotate(-3deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(3deg);
+    }
+}
+
+/* Score Pop Animation */
+#score.score-pop {
+    animation: scorePop 0.5s ease;
+}
+
+@keyframes scorePop {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+        color: #fd79a8;
+    }
+}
+
+/* Particles Container */
+#particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+}
+
+/* Particle Effects */
+.particle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particleFloat 1s ease-out forwards;
+    box-shadow: 0 0 10px currentColor;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Confetti */
+.confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    top: -10px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: confettiFall 1s ease-out forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Enhanced concha hover with sparkle effect */
+.concha:hover::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 10px;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: sparkle 1.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: rotate(180deg);
+    }
+}
+
+/* Shake animation for invalid swaps */
+.concha.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* Floating animation for game board */
+#game-board {
+    animation: floatBoard 3s ease-in-out infinite;
+}
+
+@keyframes floatBoard {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Add glow to selected concha */
+.concha.selected::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 200, 0, 0.3), transparent);
+    border-radius: 50%;
+    animation: glow 0.5s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+    }
+}
+
 @media (max-width: 600px) {
     h1 {
         font-size: 2em;
@@ -268,6 +456,10 @@ h1 {
     }
 
     .modal-content h2 {
+        font-size: 2em;
+    }
+
+    .combo-message {
         font-size: 2em;
     }
 }
