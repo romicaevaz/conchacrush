@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concha Crush - ¡Delicioso!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>🎉 Concha Crush 🎉</h1>
+            <p class="subtitle">¡Match the pan dulce!</p>
+        </header>
+
+        <div class="game-info">
+            <div class="score-container">
+                <span class="label">Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="moves-container">
+                <span class="label">Moves:</span>
+                <span id="moves">30</span>
+            </div>
+        </div>
+
+        <div id="game-board"></div>
+
+        <div id="combo-message" class="combo-message hidden"></div>
+        <div id="particles-container"></div>
+
+        <div class="controls">
+            <button id="new-game-btn">New Game</button>
+        </div>
+
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>¡Juego Terminado!</h2>
+                <p>Final Score: <span id="final-score">0</span></p>
+                <button id="play-again-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
